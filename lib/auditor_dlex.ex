@@ -20,7 +20,7 @@ defmodule AuditorDlex do
     end
   end
 
-  def update(%Dlex.Changeset{valid?: true} = changeset, actor)
+  def update(changeset, actor)
       when is_binary(uid) and is_map(changeset) do
     # Validate the params and emit audit
     changeset
