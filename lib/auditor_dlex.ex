@@ -21,7 +21,7 @@ defmodule AuditorDlex do
   end
 
   def update(changeset, actor)
-      when is_binary(uid) and is_map(changeset) do
+      when is_map(changeset) do
     # Validate the params and emit audit
     changeset
     |> Graph.Repo.set()
