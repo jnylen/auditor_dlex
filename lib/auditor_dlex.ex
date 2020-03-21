@@ -11,7 +11,7 @@ defmodule AuditorDlex do
     |> Graph.Repo.set()
     |> case do
       {:ok, item} ->
-        emit(:insert, item, current_user, nil)
+        emit(:insert, item, actor, nil)
 
         {:ok, item}
 
