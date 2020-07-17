@@ -11,7 +11,9 @@ defmodule AuditorDlex do
     |> Graph.Repo.set()
     |> case do
       {:ok, item} ->
-        emit(:insert, item, actor, nil)
+        {:ok, actual_item} = Graph.Repo.get(item.uid)
+
+        emit(:insert, actual_item, actor, nil)
 
         {:ok, item}
 
@@ -20,16 +22,16 @@ defmodule AuditorDlex do
     end
   end
 
-  def update(changeset, actor)
+  def update(actual_item, changeset, actor)
       when is_map(changeset) do
     # Validate the params and emit audit
     changeset
     |> Graph.Repo.set()
     |> case do
       {:ok, item} ->
-        emit(:update, item, actor, Dlex.Changeset.apply_changes(changeset))
+        emit(:update, actual_item, actor, Dlex.Changeset.apply_changes(changeset))
 
-        {:ok, item}
+        {:ok, Dlex.Changeset.apply_changes(changeset)}
 
       response ->
         response
@@ -42,6 +44,6 @@ defmodule AuditorDlex do
 
   # Emits an telemetry
   def emit(action, item, actor, new_item \\ %{}) do
-    :telemetry.execute([:dgraph, :item, action], %{item: item, changes: new_item}, actor)
+    :telemetry.execute([:dgraph, :item, action], actor, %{item: item, changes: new_item})
   end
 end
